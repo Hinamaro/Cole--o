@@ -1,14 +1,31 @@
-const container = document.getElementById("collections");
+let container;
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    const collections = await getCollections();
+    container = document.getElementById("collections");
 
-    renderCollections(collections);
+    try {
+
+        const collections = await getCollections();
+
+        renderCollections(collections);
+
+
+    } catch (err) {
+
+        console.error(err);
+
+        container.innerHTML = `
+            <p class="error">
+                Não foi possível carregar as coleções.
+            </p>
+        `;
+
+    }
 
 });
 
-function renderCollections(collections){
+function renderCollections(collections) {
 
     container.innerHTML = "";
 
@@ -18,93 +35,66 @@ function renderCollections(collections){
 
     });
 
+    
+
 }
+
+setTimeout(() => {
+
+    document.querySelectorAll(".progress-fill").forEach(bar => {
+
+        bar.style.width = bar.dataset.progress + "%";
+
+    });
+
+},50);
 
 function createCard(collection) {
 
+    const userData = getUserData();
+
+    const owned = Object.values(userData[collection.id] || {})
+        .filter(v => v).length;
+
+    const percent = Math.round((owned / collection.volumes) * 100);
+
     const card = document.createElement("div");
+
     card.className = "collection-card";
 
     card.innerHTML = `
-        <img
-            class="collection-banner"
-            src="${collection.banner}"
-            alt="${collection.nome}"
-        >
+
+        <img class="collection-banner" src="${collection.images.card}">
+
 
         <div class="collection-info">
 
             <h2>${collection.nome}</h2>
 
-            <span>0 / ${collection.volumes} volumes</span>
+            <p>${collection.status}</p>
+
+            <span>${owned} / ${collection.volumes} volumes</span>
 
             <div class="progress">
-                <div class="progress-fill"></div>
+
+                <div
+                    class="progress-fill"
+                    style="width:${percent}%"
+                ></div>
+
             </div>
 
         </div>
+
     `;
 
-    card.addEventListener("click", () => {
-        window.location.href = `collection.html?id=${collection.id}`;
-    });
+    card.onclick = () => {
+
+        window.location.href =
+            `collection.html?id=${collection.id}`;
+
+    };
 
     return card;
-}
-async function getCollections() {
 
-    const res = await fetch("data/collections.json");
-
-    return await res.json();
-
-}
-
-
-function calculateStats(collections, userData) {
-
-    let totalVolumes = 0;
-    let ownedVolumes = 0;
-
-    collections.forEach(col => {
-
-        totalVolumes += col.volumes;
-
-        const data = userData[col.id] || {};
-
-        ownedVolumes += Object.values(data).filter(v => v).length;
-
-    });
-
-    return {
-        totalVolumes,
-        ownedVolumes,
-        percent: totalVolumes ? Math.round((ownedVolumes / totalVolumes) * 100) : 0
-    };
-}
-
-function renderDashboard(stats) {
-
-    const header = document.querySelector(".header");
-
-    const dashboard = document.createElement("div");
-    dashboard.className = "dashboard";
-
-    dashboard.innerHTML = `
-        <div class="stat">
-            <h3>${stats.totalVolumes}</h3>
-            <p>Total de volumes</p>
-        </div>
-
-        <div class="stat">
-            <h3>${stats.ownedVolumes}</h3>
-            <p>Possuídos</p>
-        </div>
-
-        <div class="stat">
-            <h3>${stats.percent}%</h3>
-            <p>Progresso geral</p>
-        </div>
-    `;
-
-    header.appendChild(dashboard);
 }

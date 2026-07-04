@@ -1,12 +1,17 @@
 [
-    {
-        "id": "re-zero",
-        "nome": "Re:Zero",
-        "autor": "Tappei Nagatsuki",
-        "editora": "MF Bunko J/Newpop",
-        "volumes": 45,
-        "banner": "covers/re-zero/banner.webp",
-        "cover": "covers/re-zero/001.webp",
-        "status": "Em publicação"
-    }
+  {
+    "id": "re-zero",
+    "nome": "Re:Zero",
+
+    "images": {
+      "card": "assets/cards/re-zero.webp",
+      "banner": "assets/banners/re-zero.webp",
+      "cover": "assets/covers/re-zero/001.webp"
+    },
+
+    "volumes": 45,
+    "status": "Em publicação",
+    "autor": "Tappei Nagatsuki",
+    "editora": "NewPOP"
+  }
 ]

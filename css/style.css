@@ -200,3 +200,108 @@ body{
     padding:45px;
 
 }
+
+.collection-info p{
+
+    margin:6px 0 15px;
+
+    color:#7d8796;
+
+    font-size:14px;
+
+}
+
+.progress-fill{
+
+    height:100%;
+
+    background:linear-gradient(90deg,#5E81F4,#82AAFF);
+
+    transition:.3s;
+
+}
+
+.progress-fill{
+
+    height:100%;
+
+    width:0;
+
+    background:linear-gradient(
+        90deg,
+        #5E81F4,
+        #82AAFF
+    );
+
+    border-radius:20px;
+
+    transition:width .6s cubic-bezier(.4,0,.2,1);
+
+}
+
+.progress-fill{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.progress-fill::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:-40%;
+
+    width:40%;
+    height:100%;
+
+    background:rgba(255,255,255,.35);
+
+    transform:skewX(-25deg);
+
+    animation:shine 2.5s infinite;
+
+}
+
+@keyframes shine{
+
+    from{
+        left:-40%;
+    }
+
+    to{
+        left:140%;
+    }
+
+}
+
+
+@media (max-width: 768px){
+
+    body{
+        padding:15px;
+    }
+
+    .header h1{
+        font-size:28px;
+    }
+
+    .collections{
+
+        grid-template-columns:1fr;
+
+        gap:20px;
+
+    }
+
+    .collection-banner{
+
+        height:180px;
+
+    }
+
+}
