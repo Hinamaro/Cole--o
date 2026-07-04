@@ -1,0 +1,12 @@
+[
+    {
+        "id": "re-zero",
+        "nome": "Re:Zero",
+        "autor": "Tappei Nagatsuki",
+        "editora": "MF Bunko J/Newpop",
+        "volumes": 45,
+        "banner": "covers/re-zero/banner.webp",
+        "cover": "covers/re-zero/001.webp",
+        "status": "Em publicação"
+    }
+]

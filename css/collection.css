@@ -1,0 +1,204 @@
+.hero {
+    position: relative;
+    height: 320px;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 30px;
+    color: white;
+}
+
+.overlay h1 {
+    font-size: 40px;
+}
+
+#volumes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.volume-card {
+    background: #1b2230;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.volume-card:hover {
+    transform: scale(1.05);
+}
+
+.volume-card img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.owned {
+    color: #3ddc84;
+}
+
+.not-owned {
+    color: #888;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4f7cff, #6ee7ff);
+    transition: width 0.3s ease;
+}
+.pulse {
+    transform: scale(1.08);
+    transition: 0.15s;
+}
+
+.volume-card img {
+    width: 100%;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.volume-card:hover img {
+    transform: scale(1.05);
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    gap: 10px;
+}
+
+.controls button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #1b2230;
+    color: white;
+    transition: 0.2s;
+}
+
+.controls button:hover {
+    background: #2a3448;
+}
+
+.filters {
+    display: flex;
+    gap: 8px;
+}
+
+#unmark-all {
+    background: #2a1b1b;
+    color: #ff6b6b;
+}
+
+#unmark-all:hover {
+    background: #3a2222;
+}
+
+/* modo estante ativo */
+body.shelf-mode #volumes {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 18px;
+}
+
+.volume-card.shelf {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+
+.volume-card.shelf img {
+    width: 100%;
+    border-radius: 8px;
+    transition: 0.2s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.volume-card.shelf:hover img {
+    transform: scale(1.08);
+}
+
+.volume-card {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.volume-card.clicked {
+    transform: scale(1.08);
+    opacity: 0.7;
+}
+
+.backup-controls {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.backup-controls button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #1b2230;
+    color: white;
+}
+
+.backup-controls input {
+    color: white;
+}
+
+.volume-card.owned img {
+    filter: none;
+    opacity: 1;
+}
+
+.volume-card.owned {
+    border: 2px solid #41c46a;
+}
+
+
+.volume-card.missing img {
+    filter: grayscale(100%);
+    opacity: .45;
+}
+
+.volume-card.next {
+    border: 2px solid #FFD54A;
+    box-shadow: 0 0 15px rgba(255, 213, 74, .45);
+}
+
+
+.volume-card {
+    transition: .2s;
+}
+
+.volume-card:hover {
+    transform: translateY(-6px);
+}

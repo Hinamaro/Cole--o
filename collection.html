@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Biblioteca de Plêiades</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/collection.css">
+
+</head>
+
+<body>
+
+    <header id="collection-header"></header>
+
+
+    <div class="backup-controls">
+
+    <button id="export-btn">Exportar biblioteca</button>
+
+    <input type="file" id="import-file" accept=".json" hidden>
+<button id="import-btn">Importar biblioteca</button>
+
+</div>
+
+    <div class="controls">
+
+    <button id="mark-all">Marcar todos</button>
+    <button id="unmark-all">Desmarcar todos</button>
+    <button id="toggle-shelf">Modo estante ✨</button>
+
+    <div class="filters">
+
+        <button data-filter="all">Todos</button>
+        <button data-filter="missing">Faltando</button>
+        <button data-filter="owned">Completos</button>
+
+    </div>
+
+</div>
+
+
+    <main id="volumes"></main>
+
+
+    
+
+    <script src="js/api.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/collection.js"></script>
+
+</body>
+
+</html>
