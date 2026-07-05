@@ -305,3 +305,130 @@ body{
     }
 
 }
+
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.7);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+
+    backdrop-filter:blur(6px);
+
+    animation:fadeIn .2s;
+
+}
+
+.hidden{
+
+    display:none;
+
+}
+
+.modal-content{
+
+    width:420px;
+
+    max-width:90%;
+
+    background:#1b2230;
+
+    border-radius:18px;
+
+    padding:30px;
+
+    color:white;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.45);
+
+}
+
+.modal-content h2{
+
+    margin-bottom:20px;
+
+}
+
+.modal-content p{
+
+    margin:8px 0;
+
+    color:#c7d1df;
+
+}
+
+.modal-buttons{
+
+    margin-top:30px;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:12px;
+
+}
+
+.modal-buttons button{
+
+    padding:12px 22px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    transition:.2s;
+
+}
+
+#modal-cancel{
+
+    background:#343d50;
+
+    color:white;
+
+}
+
+#modal-confirm{
+
+    background:#5E81F4;
+
+    color:white;
+
+}
+
+.modal-buttons button:hover{
+
+    transform:translateY(-2px);
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+    }
+
+    to{
+
+        opacity:1;
+
+    }
+
+}

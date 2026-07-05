@@ -13,5 +13,24 @@
     "status": "Em publicação",
     "autor": "Tappei Nagatsuki",
     "editora": "NewPOP"
+  },
+
+
+  {
+    "id": "gash-bell",
+    "nome": "Gash Bell",
+
+    "images": {
+      "card": "assets/cards/gash-bell.webp",
+      "banner": "assets/banners/gash-bell.webp",
+      "cover": "assets/covers/gash-bell/001.webp"
+    },
+
+    "volumes": 11,
+    "status": "Em publicação",
+    "autor": "Makoto Raiku",
+    "editora": "MPEG"
   }
+
 ]
+
