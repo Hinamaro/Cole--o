@@ -1,214 +1,258 @@
-function getUserData() {
-    return JSON.parse(localStorage.getItem("shelf")) || {};
-}
+    function getUserData() {
+        return JSON.parse(localStorage.getItem("shelf")) || {};
+    }
 
-function saveUserData(data) {
-    localStorage.setItem("shelf", JSON.stringify(data));
-}
+    function saveUserData(data) {
+        localStorage.setItem("shelf", JSON.stringify(data));
+    }
 
-function exportData() {
+    function exportData() {
 
-    const library = getUserData();
+        const library = getUserData();
 
-    const totalCollections = Object.keys(library).length;
+        const totalCollections = Object.keys(library).length;
 
-    let ownedVolumes = 0;
+        let ownedVolumes = 0;
 
-    Object.values(library).forEach(collection => {
+        Object.values(library).forEach(collection => {
 
-        ownedVolumes += Object.values(collection)
-            .filter(v => v).length;
+            ownedVolumes += Object.values(collection)
+                .filter(v => v).length;
 
-    });
+        });
 
-    const backup = {
+        const backup = {
 
-        app: "Biblioteca de Plêiades",
+            app: "Biblioteca de Plêiades",
 
-        version: 1,
+            version: 1,
 
-        createdAt: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
 
-        stats: {
+            stats: {
 
-            collections: totalCollections,
+                collections: totalCollections,
 
-            ownedVolumes: ownedVolumes
+                ownedVolumes: ownedVolumes
 
-        },
+            },
 
-        library: library
+            library: library
 
-    };
+        };
 
-    const json = JSON.stringify(backup, null, 4);
+        const json = JSON.stringify(backup, null, 4);
 
-    const blob = new Blob([json], {
-        type: "application/json"
-    });
+        const blob = new Blob([json], {
+            type: "application/json"
+        });
 
-    const url = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
 
-    const now = new Date();
+        const now = new Date();
 
-    const fileName =
-        `Biblioteca-de-Pleiades_${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}_${String(now.getHours()).padStart(2,"0")}-${String(now.getMinutes()).padStart(2,"0")}.json`;
+        const fileName =
+            `Biblioteca-de-Pleiades_${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}_${String(now.getHours()).padStart(2,"0")}-${String(now.getMinutes()).padStart(2,"0")}.json`;
 
-    const a = document.createElement("a");
+        const a = document.createElement("a");
 
-    a.href = url;
-    a.download = fileName;
+        a.href = url;
+        a.download = fileName;
 
-    document.body.appendChild(a);
+        document.body.appendChild(a);
 
-    a.click();
+        a.click();
 
-    document.body.removeChild(a);
+        document.body.removeChild(a);
 
-    URL.revokeObjectURL(url);
+        URL.revokeObjectURL(url);
 
-}
+    }
 
-async function importData(file) {
+    async function importData(file) {
 
-    const reader = new FileReader();
+        const reader = new FileReader();
 
-    reader.onload = async (event) => {
+        reader.onload = async (event) => {
 
-        try{
+            try{
 
-            const backup = JSON.parse(event.target.result);
+                const backup = JSON.parse(event.target.result);
 
-            let library;
+                let library;
 
-            let html;
+                let html;
 
-            if(!backup.version){
+                if(!backup.version){
 
-                library = backup;
+                    library = backup;
 
-                const collections = Object.keys(library).length;
+                    const collections = Object.keys(library).length;
 
-                let volumes = 0;
+                    let volumes = 0;
 
-                Object.values(library).forEach(col=>{
+                    Object.values(library).forEach(col=>{
 
-                    volumes += Object.values(col)
-                    .filter(v=>v).length;
+                        volumes += Object.values(col)
+                        .filter(v=>v).length;
 
-                });
+                    });
 
-                html = `
-                    <p><strong>Tipo:</strong> Backup antigo</p>
+                    html = `
+                        <p><strong>Tipo:</strong> Backup antigo</p>
 
-                    <p><strong>Coleções:</strong> ${collections}</p>
+                        <p><strong>Coleções:</strong> ${collections}</p>
 
-                    <p><strong>Volumes:</strong> ${volumes}</p>
+                        <p><strong>Volumes:</strong> ${volumes}</p>
 
-                    <br>
+                        <br>
 
-                    <p>Esta ação substituirá sua biblioteca atual.</p>
-                `;
+                        <p>Esta ação substituirá sua biblioteca atual.</p>
+                    `;
 
-            }else{
+                }else{
 
-                library = backup.library;
+                    library = backup.library;
 
-                html = `
-                    <p><strong>Data:</strong><br>${new Date(backup.createdAt).toLocaleString("pt-BR")}</p>
+                    html = `
+                        <p><strong>Data:</strong><br>${new Date(backup.createdAt).toLocaleString("pt-BR")}</p>
 
-                    <p><strong>Coleções:</strong> ${backup.stats.collections}</p>
+                        <p><strong>Coleções:</strong> ${backup.stats.collections}</p>
 
-                    <p><strong>Volumes:</strong> ${backup.stats.ownedVolumes}</p>
+                        <p><strong>Volumes:</strong> ${backup.stats.ownedVolumes}</p>
 
-                    <p><strong>Versão:</strong> ${backup.version}</p>
+                        <p><strong>Versão:</strong> ${backup.version}</p>
 
-                    <br>
+                        <br>
 
-                    <p>Esta ação substituirá sua biblioteca atual.</p>
-                `;
+                        <p>Esta ação substituirá sua biblioteca atual.</p>
+                    `;
+
+                }
+
+                const ok = await showModal(
+
+                    "📚 Restaurar Biblioteca",
+
+                    html
+
+                );
+
+                if(!ok) return;
+
+                saveUserData(library);
+
+                location.reload();
 
             }
 
-            const ok = await showModal(
+            catch(err){
 
-                "📚 Restaurar Biblioteca",
+        console.error(err);
 
-                html
+        alert(err.message);
 
-            );
-
-            if(!ok) return;
-
-            saveUserData(library);
-
-            location.reload();
-
-        }
-
-        catch(err){
-
-    console.error(err);
-
-    alert(err.message);
-
-}
-
-    };
-
-    reader.readAsText(file);
-
-}
-
-
-function showModal(title, html) {
-
-    return new Promise(resolve => {
-
-        const modal = document.getElementById("modal");
-
-if (!modal) {
-
-    throw new Error(
-        "O modal de restauração não foi encontrado na página."
-    );
-
-}
-
-        document.getElementById("modal-title").innerHTML = title;
-        document.getElementById("modal-body").innerHTML = html;
-
-        modal.classList.remove("hidden");
-
-        document.getElementById("modal-confirm").onclick = () => {
-
-            modal.classList.add("hidden");
-
-            resolve(true);
+    }
 
         };
 
-        document.getElementById("modal-cancel").onclick = () => {
+        reader.readAsText(file);
 
-            modal.classList.add("hidden");
+    }
 
-            resolve(false);
 
-        };
+    function showModal(title, html) {
 
-    });
+        return new Promise(resolve => {
 
-}
+            const modal = document.getElementById("modal");
 
-function compressLibrary(library) {
+    if (!modal) {
+
+        throw new Error(
+            "O modal de restauração não foi encontrado na página."
+        );
+
+    }
+
+            document.getElementById("modal-title").innerHTML = title;
+            document.getElementById("modal-body").innerHTML = html;
+
+            modal.classList.remove("hidden");
+
+            document.getElementById("modal-confirm").onclick = () => {
+
+                modal.classList.add("hidden");
+
+                resolve(true);
+
+            };
+
+            document.getElementById("modal-cancel").onclick = () => {
+
+                modal.classList.add("hidden");
+
+                resolve(false);
+
+            };
+
+        });
+
+    }
+
+    function compressLibrary(library) {
 
     const result = {};
 
     Object.entries(library).forEach(([collectionId, volumes]) => {
 
-        result[collectionId] = Object.entries(volumes)
-            .filter(([_, owned]) => owned)
-            .map(([volume]) => Number(volume));
+        const owned = Object.keys(volumes)
+            .map(Number);
+
+        if (owned.length === 0) {
+
+            result[collectionId] = {
+
+                count: 0,
+
+                data: ""
+
+            };
+
+            return;
+
+        }
+
+        const maxVolume = Math.max(...owned);
+
+        const bytes = new Uint8Array(
+            Math.ceil(maxVolume / 8)
+        );
+
+        owned.forEach(volume => {
+
+            const index = volume - 1;
+
+            bytes[Math.floor(index / 8)] |=
+                (1 << (index % 8));
+
+        });
+
+        let binary = "";
+
+        bytes.forEach(byte => {
+
+            binary += String.fromCharCode(byte);
+
+        });
+
+        result[collectionId] = {
+
+            count: maxVolume,
+
+            data: btoa(binary)
+
+        };
 
     });
 
@@ -217,19 +261,35 @@ function compressLibrary(library) {
 }
 
 
-function decompressLibrary(data) {
+    function decompressLibrary(data) {
 
     const library = {};
 
-    Object.entries(data).forEach(([collectionId, volumes]) => {
+    Object.entries(data).forEach(([collectionId, compressed]) => {
 
         library[collectionId] = {};
 
-        volumes.forEach(volume => {
+        if (!compressed.data) return;
 
-            library[collectionId][volume] = true;
+        const binary = atob(compressed.data);
 
-        });
+        for (let byteIndex = 0; byteIndex < binary.length; byteIndex++) {
+
+            const byte = binary.charCodeAt(byteIndex);
+
+            for (let bit = 0; bit < 8; bit++) {
+
+                if (byte & (1 << bit)) {
+
+                    const volume = (byteIndex * 8) + bit + 1;
+
+                    library[collectionId][volume] = true;
+
+                }
+
+            }
+
+        }
 
     });
 
@@ -240,120 +300,137 @@ function decompressLibrary(data) {
 
 
 
-function exportQrCode() {
+    function exportQrCode() {
 
-    const compressed = compressLibrary(library);
+        const library = getUserData();
 
-const ownedVolumes = Object.values(library)
-    .reduce((total, collection) => {
+        const compressed = compressLibrary(library);
 
-        return total + Object.values(collection)
-            .filter(v => v).length;
+    const ownedVolumes = Object.values(library)
+        .reduce((total, collection) => {
 
-    }, 0);
+            return total + Object.values(collection)
+                .filter(v => v).length;
 
-const qrData = {
+        }, 0);
 
-    app: "Biblioteca de Plêiades",
+    const qrData = {
 
-    version: 2,
+        app: "Biblioteca de Plêiades",
 
-    createdAt: new Date().toISOString(),
+        version: 3,
 
-    stats: {
+        createdAt: new Date().toISOString(),
 
-        collections: Object.keys(library).length,
+        stats: {
 
-        ownedVolumes
+            collections: Object.keys(library).length,
 
-    },
+            ownedVolumes
 
-    library: compressed
+        },
 
-};
+        library: compressed
 
-    // Limpa QR antigo
-    document.getElementById("qr-code").innerHTML = "";
+    };
 
-    // Gera o QR
-    new QRCode(document.getElementById("qr-code"), {
-        text: JSON.stringify(qrData),
-        width: 250,
-        height: 250
-    });
+        // Limpa QR antigo
+        document.getElementById("qr-code").innerHTML = "";
 
-    // Informações
-    document.getElementById("qr-info").innerHTML = `
-        📚 ${Object.keys(library).length} coleção(ões)
-        <br>
-        🕒 ${new Date().toLocaleString("pt-BR")}
-    `;
+        // Gera o QR
+        new QRCode(document.getElementById("qr-code"), {
+    text: JSON.stringify(qrData),
+    width: 500,
+    height: 500,
+    correctLevel: QRCode.CorrectLevel.L
+});
 
-    // Abre o modal
-    document.getElementById("qr-modal").classList.remove("hidden");
+        // Informações
+        document.getElementById("qr-info").innerHTML = `
+            📚 ${Object.keys(library).length} coleção(ões)
+            <br>
+            🕒 ${new Date().toLocaleString("pt-BR")}
+        `;
+
+        // Abre o modal
+        document.getElementById("qr-modal").classList.remove("hidden");
+
+    }
+
+    function startQrScanner() {
+
+        const modal = document.getElementById("scan-modal");
+
+        modal.classList.remove("hidden");
+
+        const scanner = new Html5Qrcode("reader");
+
+        scanner.start(
+
+            { facingMode: "environment" },
+
+            {
+                fps: 10,
+                qrbox: 250
+            },
+
+            (decodedText) => {
+
+                scanner.stop();
+
+                modal.classList.add("hidden");
+
+                importQrBackup(decodedText);
+
+            }
+
+        );
+
+    }
+
+    function importQrBackup(text) {
+
+        try {
+
+            const backup = JSON.parse(text);
+
+            let library;
+
+if (backup.version >= 3) {
+
+    library = decompressLibrary(backup.library);
+
+} else {
+
+    // Compatibilidade com versões antigas
+    library = backup.version === 2
+        ? decompressLibraryOld(backup.library)
+        : backup.library;
 
 }
 
-function startQrScanner() {
+            saveUserData(library);
 
-    const modal = document.getElementById("scan-modal");
+            alert("Biblioteca importada!");
 
-    modal.classList.remove("hidden");
-
-    const scanner = new Html5Qrcode("reader");
-
-    scanner.start(
-
-        { facingMode: "environment" },
-
-        {
-            fps: 10,
-            qrbox: 250
-        },
-
-        (decodedText) => {
-
-            scanner.stop();
-
-            modal.classList.add("hidden");
-
-            importQrBackup(decodedText);
+            location.reload();
 
         }
 
-    );
+        catch {
 
-}
+            alert("QR Code inválido.");
 
-function importQrBackup(text) {
-
-    try {
-
-        const backup = JSON.parse(text);
-
-        const library = decompressLibrary(backup.l);
-
-        saveUserData(library);
-
-        alert("Biblioteca importada!");
-
-        location.reload();
+        }
 
     }
+    
 
-    catch {
-
-        alert("QR Code inválido.");
-
-    }
-
-}
-
-window.getUserData = getUserData;
-window.saveUserData = saveUserData;
-window.exportData = exportData;
-window.importData = importData;
-window.exportQrCode = exportQrCode;
-window.startQrScanner = startQrScanner;
+    window.getUserData = getUserData;
+    window.saveUserData = saveUserData;
+    window.exportData = exportData;
+    window.importData = importData;
+    window.exportQrCode = exportQrCode;
+    window.startQrScanner = startQrScanner;
 
 

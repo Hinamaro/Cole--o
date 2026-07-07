@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const collections = await getCollections();
 
         renderCollections(collections);
+        renderHeroStats(collections);
+        
 
 
     } catch (err) {
@@ -71,9 +73,21 @@ function createCard(collection) {
 
             <h2>${collection.nome}</h2>
 
-            <p>${collection.status}</p>
+            <p class="status">
+    ${collection.status}
+</p>
 
-            <span>${owned} / ${collection.volumes} volumes</span>
+<span>
+
+📚 ${owned} de ${collection.volumes} volumes
+
+</span>
+
+<small>
+
+✨ ${percent}% concluído
+
+</small>
 
             <div class="progress">
 
@@ -96,5 +110,82 @@ function createCard(collection) {
     };
 
     return card;
+
+}
+
+
+function renderHeroStats(collections){
+
+    const hero = document.getElementById("hero-stats");
+
+    const userData = getUserData();
+
+    let totalVolumes = 0;
+
+    let ownedVolumes = 0;
+
+    collections.forEach(collection=>{
+
+        totalVolumes += collection.volumes;
+
+        ownedVolumes += Object.values(
+
+            userData[collection.id] || {}
+
+        ).filter(Boolean).length;
+
+    });
+
+    hero.innerHTML = `
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+
+                📚 Coleções
+
+            </div>
+
+            <div class="stat-value">
+
+                ${collections.length}
+
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+
+                📖 Volumes
+
+            </div>
+
+            <div class="stat-value">
+
+                ${totalVolumes}
+
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+
+                ⭐ Na Estante
+
+            </div>
+
+            <div class="stat-value">
+
+                ${ownedVolumes}
+
+            </div>
+
+        </div>
+
+    `;
 
 }
