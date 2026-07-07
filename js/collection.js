@@ -21,11 +21,62 @@ document.getElementById("unmark-all").addEventListener("click", () => {
     unmarkAll(collection);
 });
 
+const exportQrBtn = document.getElementById("export-qr-btn");
+
+if (exportQrBtn) {
+    exportQrBtn.addEventListener("click", exportQrCode);
+}
+
+const closeQr = document.getElementById("close-qr");
+
+if (closeQr) {
+
+    closeQr.addEventListener("click", () => {
+
+        document
+            .getElementById("qr-modal")
+            .classList.add("hidden");
+
+    });
+
+}
+
+const importQrBtn =
+    document.getElementById("import-qr-btn");
+
+if (importQrBtn) {
+
+    importQrBtn.addEventListener(
+
+        "click",
+
+        startQrScanner
+
+    );
+
+}
+
+const closeScanner =
+    document.getElementById("close-scanner");
+
+if (closeScanner) {
+
+    closeScanner.addEventListener("click", () => {
+
+        document
+            .getElementById("scan-modal")
+            .classList.add("hidden");
+
+    });
+
+}
+
 document.querySelectorAll("[data-filter]").forEach(btn => {
 
     btn.addEventListener("click", () => {
         setFilter(btn.dataset.filter, collection);
     });
+    
 
 });
 

@@ -200,9 +200,160 @@ if (!modal) {
 
 }
 
+function compressLibrary(library) {
+
+    const result = {};
+
+    Object.entries(library).forEach(([collectionId, volumes]) => {
+
+        result[collectionId] = Object.entries(volumes)
+            .filter(([_, owned]) => owned)
+            .map(([volume]) => Number(volume));
+
+    });
+
+    return result;
+
+}
+
+
+function decompressLibrary(data) {
+
+    const library = {};
+
+    Object.entries(data).forEach(([collectionId, volumes]) => {
+
+        library[collectionId] = {};
+
+        volumes.forEach(volume => {
+
+            library[collectionId][volume] = true;
+
+        });
+
+    });
+
+    return library;
+
+}
+
+
+
+
+function exportQrCode() {
+
+    const compressed = compressLibrary(library);
+
+const ownedVolumes = Object.values(library)
+    .reduce((total, collection) => {
+
+        return total + Object.values(collection)
+            .filter(v => v).length;
+
+    }, 0);
+
+const qrData = {
+
+    app: "Biblioteca de Plêiades",
+
+    version: 2,
+
+    createdAt: new Date().toISOString(),
+
+    stats: {
+
+        collections: Object.keys(library).length,
+
+        ownedVolumes
+
+    },
+
+    library: compressed
+
+};
+
+    // Limpa QR antigo
+    document.getElementById("qr-code").innerHTML = "";
+
+    // Gera o QR
+    new QRCode(document.getElementById("qr-code"), {
+        text: JSON.stringify(qrData),
+        width: 250,
+        height: 250
+    });
+
+    // Informações
+    document.getElementById("qr-info").innerHTML = `
+        📚 ${Object.keys(library).length} coleção(ões)
+        <br>
+        🕒 ${new Date().toLocaleString("pt-BR")}
+    `;
+
+    // Abre o modal
+    document.getElementById("qr-modal").classList.remove("hidden");
+
+}
+
+function startQrScanner() {
+
+    const modal = document.getElementById("scan-modal");
+
+    modal.classList.remove("hidden");
+
+    const scanner = new Html5Qrcode("reader");
+
+    scanner.start(
+
+        { facingMode: "environment" },
+
+        {
+            fps: 10,
+            qrbox: 250
+        },
+
+        (decodedText) => {
+
+            scanner.stop();
+
+            modal.classList.add("hidden");
+
+            importQrBackup(decodedText);
+
+        }
+
+    );
+
+}
+
+function importQrBackup(text) {
+
+    try {
+
+        const backup = JSON.parse(text);
+
+        const library = decompressLibrary(backup.l);
+
+        saveUserData(library);
+
+        alert("Biblioteca importada!");
+
+        location.reload();
+
+    }
+
+    catch {
+
+        alert("QR Code inválido.");
+
+    }
+
+}
+
 window.getUserData = getUserData;
 window.saveUserData = saveUserData;
 window.exportData = exportData;
 window.importData = importData;
+window.exportQrCode = exportQrCode;
+window.startQrScanner = startQrScanner;
 
 

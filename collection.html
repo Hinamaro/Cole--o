@@ -21,10 +21,27 @@
 
     <div class="backup-controls">
 
-    <button id="export-btn">Exportar biblioteca</button>
+    <button id="export-btn">
+        📤 Exportar Arquivo
+    </button>
 
-    <input type="file" id="import-file" accept=".json" hidden>
-<button id="import-btn">Importar biblioteca</button>
+    <button id="export-qr-btn">
+        📱 Exportar QR
+    </button>
+
+    <button id="import-btn">
+        📥 Importar Arquivo
+    </button>
+
+    <button id="import-qr-btn">
+        📷 Importar QR
+    </button>
+
+    <input
+        type="file"
+        id="import-file"
+        accept=".json"
+        hidden>
 
 </div>
 
@@ -70,14 +87,56 @@
 
     </div>
 
+</div>
+
+<!-- Modal do QR -->
+
+<div id="qr-modal" class="modal hidden">
+
+    <div class="modal-content">
+
+        <h2>📱 Transferir Biblioteca</h2>
+
+        <div id="qr-code"></div>
+
+        <p id="qr-info"></p>
+
+        <button id="close-qr">
+            Fechar
+        </button>
+
+    </div>
+
+</div>
+
+<div id="scan-modal" class="modal hidden">
+
+    <div class="modal-content">
+
+        <h2>📷 Escanear QR Code</h2>
+
+        <div id="reader"></div>
+
+        <button id="close-scanner">
+            Cancelar
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
 </div>  
 
 
     
 
-    <script src="js/api.js"></script>
-    <script src="js/storage.js"></script>
-    <script src="js/collection.js"></script>
+<script src="js/api.js"></script>
+<script src="js/qrcode.min.js"></script>
+<script src="js/html5-qrcode.min.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/collection.js"></script>
 
 </body>
 
