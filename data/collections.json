@@ -3,6 +3,8 @@
     "id": "re-zero",
     "nome": "Re:Zero",
 
+  "color": "#6d52ff",
+
     "images": {
       "card": "assets/cards/re-zero.webp",
       "banner": "assets/banners/re-zero.webp",
@@ -19,6 +21,8 @@
   {
     "id": "gash-bell",
     "nome": "Gash Bell",
+
+    "color": "#FFD54F",
 
     "images": {
       "card": "assets/cards/gash-bell.webp",

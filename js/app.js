@@ -63,44 +63,91 @@ function createCard(collection) {
     const card = document.createElement("div");
 
     card.className = "collection-card";
+    card.style.setProperty(
+    "--collection-color",
+    collection.color
+);
 
     card.innerHTML = `
 
-        <img class="collection-banner" src="${collection.images.card}">
+    <div class="banner-wrapper">
 
+        <img
+            class="collection-banner"
+            src="${collection.images.card}"
+        >
 
-        <div class="collection-info">
+        <div class="banner-shine"></div>
 
-            <h2>${collection.nome}</h2>
+    </div>
 
-            <p class="status">
-    ${collection.status}
-</p>
+    <div class="collection-info">
 
-<span>
+        <h2>${collection.nome}</h2>
 
-📚 ${owned} de ${collection.volumes} volumes
+        <span class="status-badge">
+            ● ${collection.status}
+        </span>
 
-</span>
+        <span>
 
-<small>
+            📚 ${owned} de ${collection.volumes} volumes
 
-✨ ${percent}% concluído
+        </span>
 
-</small>
+        <small>
 
-            <div class="progress">
+            ✨ ${percent}% concluído
 
-                <div
-                    class="progress-fill"
-                    style="width:${percent}%"
-                ></div>
+        </small>
 
-            </div>
+        <div class="progress">
+
+            <div
+                class="progress-fill"
+                data-progress="${percent}"
+                style="width:${percent}%"
+            ></div>
 
         </div>
 
+        <button class="open-btn">
+
+            📖 Abrir coleção →
+
+        </button>
+
+    </div>
+
+`;
+
+card.addEventListener("mousemove", e => {
+
+    const rect = card.getBoundingClientRect();
+
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const rotateY =
+        (x / rect.width - .5) * 10;
+
+    const rotateX =
+        (rect.height / 2 - y) / 8;
+
+    card.style.transform = `
+        perspective(900px)
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+        translateY(-8px)
     `;
+
+});
+
+card.addEventListener("mouseleave", () => {
+
+    card.style.transform = "";
+
+});
 
     card.onclick = () => {
 
@@ -121,71 +168,96 @@ function renderHeroStats(collections){
     const userData = getUserData();
 
     let totalVolumes = 0;
-
     let ownedVolumes = 0;
 
-    collections.forEach(collection=>{
+    let bestCollection = null;
+    let bestPercent = -1;
+
+    let nextCollection = null;
+    let nextVolume = null;
+
+    collections.forEach(collection => {
 
         totalVolumes += collection.volumes;
 
-        ownedVolumes += Object.values(
-
+        const owned = Object.values(
             userData[collection.id] || {}
-
         ).filter(Boolean).length;
+
+        ownedVolumes += owned;
+
+        const percent =
+            Math.round((owned / collection.volumes) * 100);
+
+        if(percent > bestPercent){
+
+            bestPercent = percent;
+            bestCollection = collection.nome;
+
+        }
+
+        if(nextCollection === null){
+
+            const data =
+                userData[collection.id] || {};
+
+            for(let i=1;i<=collection.volumes;i++){
+
+                if(!data[i]){
+
+                    nextCollection = collection.nome;
+                    nextVolume = i;
+                    break;
+
+                }
+
+            }
+
+        }
 
     });
 
+    const completion =
+        Math.round((ownedVolumes / totalVolumes) * 100);
+
     hero.innerHTML = `
 
-        <div class="stat-card">
+<div class="stat-card">
+<div class="stat-title">📚 Coleções</div>
+<div class="stat-value">${collections.length}</div>
+</div>
 
-            <div class="stat-title">
+<div class="stat-card">
+<div class="stat-title">📖 Volumes</div>
+<div class="stat-value">${totalVolumes}</div>
+</div>
 
-                📚 Coleções
+<div class="stat-card">
+<div class="stat-title">⭐ Na Estante</div>
+<div class="stat-value">${ownedVolumes}</div>
+</div>
 
-            </div>
+<div class="stat-card">
+<div class="stat-title">📈 Biblioteca</div>
+<div class="stat-value">${completion}%</div>
+</div>
 
-            <div class="stat-value">
+<div class="stat-card">
+<div class="stat-title">🏆 Mais avançada</div>
+<div class="stat-value">${bestCollection}</div>
+</div>
 
-                ${collections.length}
+<div class="stat-card">
+<div class="stat-title">🛒 Próxima compra</div>
+<div class="stat-value">
 
-            </div>
+${nextCollection
+    ? `${nextCollection} Vol. ${nextVolume}`
+    : "Tudo completo 🎉"}
 
-        </div>
+</div>
+</div>
 
-        <div class="stat-card">
-
-            <div class="stat-title">
-
-                📖 Volumes
-
-            </div>
-
-            <div class="stat-value">
-
-                ${totalVolumes}
-
-            </div>
-
-        </div>
-
-        <div class="stat-card">
-
-            <div class="stat-title">
-
-                ⭐ Na Estante
-
-            </div>
-
-            <div class="stat-value">
-
-                ${ownedVolumes}
-
-            </div>
-
-        </div>
-
-    `;
+`;
 
 }
