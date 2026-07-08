@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         renderCollections(collections);
         renderHeroStats(collections);
+        updateProfileUI();
         
 
 
