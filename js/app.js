@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const collections = await getCollections();
 
         renderCollections(collections);
-        renderHeroStats(collections);
+        await renderHeroStats();
         updateProfileUI();
         
 
@@ -162,103 +162,128 @@ card.addEventListener("mouseleave", () => {
 }
 
 
-function renderHeroStats(collections){
+async function renderHeroStats(){
 
-    const hero = document.getElementById("hero-stats");
+    const hero =
+        document.getElementById("hero-stats");
 
-    const userData = getUserData();
-
-    let totalVolumes = 0;
-    let ownedVolumes = 0;
-
-    let bestCollection = null;
-    let bestPercent = -1;
-
-    let nextCollection = null;
-    let nextVolume = null;
-
-    collections.forEach(collection => {
-
-        totalVolumes += collection.volumes;
-
-        const owned = Object.values(
-            userData[collection.id] || {}
-        ).filter(Boolean).length;
-
-        ownedVolumes += owned;
-
-        const percent =
-            Math.round((owned / collection.volumes) * 100);
-
-        if(percent > bestPercent){
-
-            bestPercent = percent;
-            bestCollection = collection.nome;
-
-        }
-
-        if(nextCollection === null){
-
-            const data =
-                userData[collection.id] || {};
-
-            for(let i=1;i<=collection.volumes;i++){
-
-                if(!data[i]){
-
-                    nextCollection = collection.nome;
-                    nextVolume = i;
-                    break;
-
-                }
-
-            }
-
-        }
-
-    });
-
-    const completion =
-        Math.round((ownedVolumes / totalVolumes) * 100);
+    const stats =
+        await calculateLibraryStats();
 
     hero.innerHTML = `
 
 <div class="stat-card">
-<div class="stat-title">📚 Coleções</div>
-<div class="stat-value">${collections.length}</div>
+
+<div class="stat-title">
+📚 Coleções
+</div>
+
+<div class="stat-value">
+${stats.collections}
+</div>
+
 </div>
 
 <div class="stat-card">
-<div class="stat-title">📖 Volumes</div>
-<div class="stat-value">${totalVolumes}</div>
+
+<div class="stat-title">
+📖 Volumes
+</div>
+
+<div class="stat-value">
+${stats.totalVolumes}
+</div>
+
 </div>
 
 <div class="stat-card">
-<div class="stat-title">⭐ Na Estante</div>
-<div class="stat-value">${ownedVolumes}</div>
+
+<div class="stat-title">
+⭐ Na Estante
+</div>
+
+<div class="stat-value">
+${stats.owned}
+</div>
+
 </div>
 
 <div class="stat-card">
-<div class="stat-title">📈 Biblioteca</div>
-<div class="stat-value">${completion}%</div>
+
+<div class="stat-title">
+📈 Biblioteca
+</div>
+
+<div class="stat-value">
+${stats.percentage}%
+</div>
+
 </div>
 
 <div class="stat-card">
-<div class="stat-title">🏆 Mais avançada</div>
-<div class="stat-value">${bestCollection}</div>
+
+<div class="stat-title">
+🏆 Mais avançada
+</div>
+
+<div class="stat-value">
+${stats.bestCollection}
+</div>
+
 </div>
 
 <div class="stat-card">
-<div class="stat-title">🛒 Próxima compra</div>
+
+<div class="stat-title">
+🛒 Próxima compra
+</div>
+
 <div class="stat-value">
 
-${nextCollection
-    ? `${nextCollection} Vol. ${nextVolume}`
-    : "Tudo completo 🎉"}
+${
+stats.nextCollection
+?
+`${stats.nextCollection} Vol. ${stats.nextVolume}`
+:
+"Tudo completo 🎉"
+}
 
 </div>
+
 </div>
 
 `;
 
 }
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    const settingsBtn =
+        document.getElementById("settings-btn");
+
+    if(settingsBtn){
+
+        settingsBtn.onclick = openSettings;
+
+    }
+
+    document
+        .getElementById("settings-cancel")
+        ?.addEventListener("click",closeSettings);
+
+    document
+        .getElementById("settings-save")
+        ?.addEventListener("click",()=>{
+
+            const value =
+                document
+                .getElementById("profile-name-input")
+                .value;
+
+            setProfileName(value);
+
+            closeSettings();
+
+        });
+
+});

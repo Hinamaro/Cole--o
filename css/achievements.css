@@ -1,0 +1,231 @@
+.achievement-toast{
+
+    position:fixed;
+
+    right:35px;
+
+    bottom:35px;
+
+    width:390px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    padding:20px;
+
+    overflow:hidden;
+
+    border-radius:22px;
+
+    background:
+        rgba(17,22,34,.92);
+
+    backdrop-filter:blur(22px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.45);
+
+    transform:
+        translateX(500px);
+
+    opacity:0;
+
+    transition:
+        .55s cubic-bezier(.2,.8,.2,1);
+
+    z-index:999999;
+
+}
+
+.achievement-toast.show{
+
+    transform:translateX(0);
+
+    opacity:1;
+
+}
+
+.achievement-border{
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:5px;
+
+    height:100%;
+
+    background:
+
+        linear-gradient(
+
+            #FFD86A,
+
+            #6D52FF
+
+        );
+
+}
+
+.achievement-glow{
+
+    position:absolute;
+
+    inset:-40%;
+
+    background:
+
+        radial-gradient(
+
+            rgba(109,82,255,.30),
+
+            transparent 70%
+
+        );
+
+    filter:blur(50px);
+
+    animation:
+
+        achievementGlow 4s infinite;
+
+}
+
+.achievement-icon{
+
+    position:relative;
+
+    width:82px;
+
+    height:82px;
+
+    border-radius:20px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:40px;
+
+    flex-shrink:0;
+
+    background:
+
+        linear-gradient(
+
+            135deg,
+
+            #6D52FF,
+
+            #89B4FF
+
+        );
+
+    box-shadow:
+
+        0 0 35px rgba(109,82,255,.45);
+
+    animation:
+
+        achievementPop .7s;
+
+}
+
+.achievement-content{
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+.achievement-content small{
+
+    color:#FFD86A;
+
+    letter-spacing:2px;
+
+    font-size:11px;
+
+}
+
+.achievement-content h3{
+
+    margin:8px 0;
+
+    font-size:24px;
+
+}
+
+.achievement-content p{
+
+    color:#B8C3D8;
+
+    margin-bottom:12px;
+
+}
+
+.achievement-xp{
+
+    display:inline-block;
+
+    padding:6px 14px;
+
+    border-radius:999px;
+
+    background:
+
+        rgba(109,82,255,.18);
+
+    color:#9CC2FF;
+
+    font-weight:bold;
+
+}
+
+@keyframes achievementGlow{
+
+    0%{
+
+        transform:rotate(0);
+
+    }
+
+    100%{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+@keyframes achievementPop{
+
+    0%{
+
+        transform:scale(.5);
+
+    }
+
+    70%{
+
+        transform:scale(1.12);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}

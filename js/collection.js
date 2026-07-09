@@ -224,7 +224,7 @@ function setFilter(filter, collection) {
     renderVolumes(collection);
 }
 
-function unmarkAll(collection) {
+async function unmarkAll(collection) {
 
     const data = getUserData();
 
@@ -237,6 +237,10 @@ function unmarkAll(collection) {
     }
 
     saveUserData(data);
+
+    checkAchievements();
+
+    updateProfileUI();
 
     renderVolumes(collection);
     renderHeader(collection);

@@ -1,18 +1,28 @@
 const PROFILE_KEY = "profile";
 
 const TITLES = [
-    { xp: 0, title: "Visitante" },
-    { xp: 100, title: "Aprendiz" },
-    { xp: 300, title: "Bibliotecário" },
-    { xp: 700, title: "Arquivista" },
-    { xp: 1200, title: "Curador" },
-    { xp: 2500, title: "Guardião de Plêiades" },
-    { xp: 5000, title: "Lorde da Biblioteca" }
+
+    { level: 1, title: "Visitante" },
+
+    { level: 2, title: "Aprendiz" },
+
+    { level: 3, title: "Bibliotecário" },
+
+    { level: 5, title: "Arquivista" },
+
+    { level: 8, title: "Curador" },
+
+    { level: 12, title: "Guardião de Plêiades" },
+
+    { level: 20, title: "Lorde da Biblioteca" }
+
 ];
 
 function createProfile() {
 
     return {
+
+        name: "Colecionador",
 
         xp: 0,
 
@@ -30,18 +40,38 @@ function getProfile() {
 
     const saved = localStorage.getItem(PROFILE_KEY);
 
+    let profile;
+
     if (!saved) {
 
-        const profile = createProfile();
+        profile = createProfile();
 
-        saveProfile(profile);
-        updateProfileUI();
+    } else {
 
-        return profile;
+        profile = JSON.parse(saved);
 
     }
 
-    return JSON.parse(saved);
+    // Garante campos novos em perfis antigos
+    if (!profile.level) profile.level = 1;
+    if (!profile.xp) profile.xp = 0;
+    if(!profile.achievements)
+    profile.achievements = [];
+    if (!profile.name) profile.name = "Colecionador";
+
+    // Corrige perfis antigos
+    while (profile.xp >= xpToNextLevel(profile.level)) {
+
+        profile.xp -= xpToNextLevel(profile.level);
+        profile.level++;
+
+    }
+
+    profile.title = getTitle(profile.level);
+
+    saveProfile(profile);
+
+    return profile;
 
 }
 
@@ -63,13 +93,13 @@ function getLevel(xp) {
 
 }
 
-function getTitle(xp) {
+function getTitle(level){
 
     let current = TITLES[0].title;
 
-    TITLES.forEach(rank => {
+    TITLES.forEach(rank=>{
 
-        if (xp >= rank.xp) {
+        if(level >= rank.level){
 
             current = rank.title;
 
@@ -81,48 +111,188 @@ function getTitle(xp) {
 
 }
 
-function addXP(amount) {
+function addXP(amount){
 
     const profile = getProfile();
 
     profile.xp += amount;
 
-    profile.level = getLevel(profile.xp);
+    while(profile.xp >= xpToNextLevel(profile.level)){
 
-    profile.title = getTitle(profile.xp);
+        profile.xp -= xpToNextLevel(profile.level);
+
+        profile.level++;
+
+    }
+
+    profile.title = getTitle(profile.level);
 
     saveProfile(profile);
 
-    return profile;
+    updateProfileUI();
 
 }
 
-function updateProfileUI(){
+function xpToNextLevel(level){
+
+    return level * 150;
+
+}
+
+async function updateProfileUI(){
 
     const profile = getProfile();
 
-    const title =
-        document.getElementById("profile-title");
+    const avatar =
+        document.getElementById("profile-avatar");
 
-    const fill =
-        document.getElementById("xp-fill");
+    if(avatar){
 
-    const text =
-        document.getElementById("xp-text");
+        avatar.className = "avatar";
 
-    if(!title) return;
+        if(profile.level >= 50){
 
-    title.textContent = profile.title;
+            avatar.classList.add("level50");
 
-    const currentXP =
-        profile.xp % 100;
+        }
 
-    fill.style.width = currentXP + "%";
+        else if(profile.level >= 20){
 
-    text.textContent =
-        `${currentXP} / 100 XP`;
+            avatar.classList.add("level20");
+
+        }
+
+        else if(profile.level >= 10){
+
+            avatar.classList.add("level10");
+
+        }
+
+        else if(profile.level >= 5){
+
+            avatar.classList.add("level5");
+
+        }
+
+        else{
+
+            avatar.classList.add("level1");
+
+        }
+
+    }
+
+
+    const stats =
+        await calculateLibraryStats();
+
+
+    const name = document.getElementById("profile-name");
+
+    if(name){
+        name.textContent = profile.name;
+    }
+
+    const title = document.getElementById("profile-title");
+
+    if(title){
+        title.textContent = profile.title;
+    }
+
+    const level = document.getElementById("profile-level");
+
+    if(level){
+        level.textContent = `Nível ${profile.level}`;
+    }
+
+    const fill = document.getElementById("xp-fill");
+    const text = document.getElementById("xp-text");
+
+    const required = xpToNextLevel(profile.level);
+
+    const current = profile.xp;
+
+    const percent = Math.min(
+        (current / required) * 100,
+        100
+    );
+
+    if(fill){
+        fill.style.width = percent + "%";
+    }
+
+    if(text){
+        text.textContent = `${current} / ${required} XP`;
+    }
+
+    // ===== Estatísticas do perfil =====
+
+    const collections =
+        document.getElementById("profile-collections");
+
+    const volumes =
+        document.getElementById("profile-volumes");
+
+    const achievements =
+        document.getElementById("profile-achievements");
+
+    if(collections){
+        collections.textContent = stats.collections;
+    }
+
+    if(volumes){
+        volumes.textContent = stats.owned;
+    }
+
+    if(achievements){
+        achievements.textContent =
+            profile.achievements.length;
+    }
 
 }
+
+function setProfileName(name){
+
+    const profile = getProfile();
+
+    profile.name = name.trim() || "Colecionador";
+
+    saveProfile(profile);
+
+    updateProfileUI();
+
+}
+
+
+function openSettings(){
+
+    const modal =
+        document.getElementById("settings-modal");
+
+    if(!modal) return;
+
+    document.getElementById(
+        "profile-name-input"
+    ).value = getProfile().name;
+
+    modal.classList.remove("hidden");
+
+}
+
+function closeSettings(){
+
+    document
+        .getElementById("settings-modal")
+        .classList.add("hidden");
+
+}
+
+window.xpToNextLevel = xpToNextLevel;
+
+window.openSettings = openSettings;
+window.closeSettings = closeSettings;
+
+window.setProfileName = setProfileName;
 
 window.updateProfileUI = updateProfileUI;
 window.getProfile = getProfile;

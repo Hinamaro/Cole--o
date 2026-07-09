@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/achievements.css">
+    <link rel="stylesheet" href="css/perfil.css">
     <title>Biblioteca de Plêiades</title>
 
-    <link rel="stylesheet" href="css/style.css">
+
 </head>
 <body>
 
@@ -48,31 +51,74 @@
 
 </div>
 
+
+<div id="settings-modal" class="modal hidden">
+
+    <div class="modal-content settings-modal">
+
+        <h2>⚙ Configurações</h2>
+
+        <div class="settings-group">
+
+            <label for="profile-name-input">
+
+                Nome do Colecionador
+
+            </label>
+
+            <input
+                id="profile-name-input"
+                type="text"
+                maxlength="30"
+                placeholder="Digite seu nome">
+
+        </div>
+
+        <div class="settings-buttons">
+
+            <button id="settings-cancel">
+
+                Cancelar
+
+            </button>
+
+            <button id="settings-save">
+
+                Salvar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 <button id="menu-toggle">
     ☰
 </button>
 
 <aside id="sidebar">
 
-<div class="sidebar-header">
+<div class="avatar level1" id="profile-avatar">
 
-<div class="avatar">
+    <div class="avatar-ring"></div>
 
-<img
-    src="assets/branding/crest.png"
-    alt="Brasão">
+    <div class="avatar-glow"></div>
+
+    <img
+        src="assets/branding/crest.png"
+        alt="Brasão">
 
 </div>
 
-<div class="profile-info">
+<div class="profile-card">
 
-    <h2 id="profile-name">
-        Miki
-    </h2>
+    <h2 id="profile-name"></h2>
 
-    <p id="profile-title">
-        Visitante
-    </p>
+    <p id="profile-title"></p>
+
+    <span id="profile-level"></span>
 
     <div class="xp-wrapper">
 
@@ -82,9 +128,53 @@
 
         </div>
 
-        <span id="xp-text">
-            0 / 100 XP
-        </span>
+        <span id="xp-text"></span>
+
+    </div>
+
+    <div class="profile-summary">
+
+        <div class="summary-item">
+
+            <span>📚</span>
+
+            <div>
+
+                <strong id="profile-collections">0</strong>
+
+                <small>Coleções</small>
+
+            </div>
+
+        </div>
+
+        <div class="summary-item">
+
+            <span>📖</span>
+
+            <div>
+
+                <strong id="profile-volumes">0</strong>
+
+                <small>Volumes</small>
+
+            </div>
+
+        </div>
+
+        <div class="summary-item">
+
+            <span>🏆</span>
+
+            <div>
+
+                <strong id="profile-achievements">0</strong>
+
+                <small>Conquistas</small>
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -110,7 +200,7 @@
 
 </button>
 
-<button>
+<button id="settings-btn">
 
 ⚙ Configurações
 
@@ -190,10 +280,48 @@
     <script src="js/background.js"></script>
     <script src="js/api.js"></script>
     <script src="js/storage.js"></script>
+    <script src="js/stats.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/achievements.js"></script>
     <script src="js/app.js"></script>
     <script src="js/sidebar.js"></script>
     <script src="js/loader.js"></script>
+
+
+
+    <div id="achievement-toast" class="achievement-toast">
+
+    <div class="achievement-border"></div>
+
+    <div class="achievement-glow"></div>
+
+    <div class="achievement-icon">
+
+        ⭐
+
+    </div>
+
+    <div class="achievement-content">
+
+        <small>
+
+            🏆 NOVA CONQUISTA
+
+        </small>
+
+        <h3></h3>
+
+        <p></p>
+
+        <span class="achievement-xp">
+
+            +50 XP
+
+        </span>
+
+    </div>
+
+</div>
 
 </body>
 </html>
