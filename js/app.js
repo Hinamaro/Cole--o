@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     container = document.getElementById("collections");
 
+    initSettings();
+
     try {
 
         const collections = await getCollections();
@@ -11,8 +13,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderCollections(collections);
         await renderHeroStats();
         updateProfileUI();
-        
-
 
     } catch (err) {
 
@@ -28,6 +28,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 });
 
+function initSettings() {
+
+    const settingsBtn =
+        document.getElementById("settings-btn");
+
+    settingsBtn?.addEventListener("click", openSettings);
+
+    document
+        .getElementById("settings-cancel")
+        ?.addEventListener("click", closeSettings);
+
+    document
+        .getElementById("settings-save")
+        ?.addEventListener("click", () => {
+
+            const value =
+                document
+                .getElementById("profile-name-input")
+                .value;
+
+            setProfileName(value);
+
+            closeSettings();
+
+        });
+
+}
+
 function renderCollections(collections) {
 
     container.innerHTML = "";
@@ -42,15 +70,15 @@ function renderCollections(collections) {
 
 }
 
-setTimeout(() => {
+requestAnimationFrame(() => {
 
     document.querySelectorAll(".progress-fill").forEach(bar => {
 
-        bar.style.width = bar.dataset.progress + "%";
+        bar.style.width = `${bar.dataset.progress}%`;
 
     });
 
-},50);
+});
 
 function createCard(collection) {
 
@@ -255,35 +283,3 @@ stats.nextCollection
 `;
 
 }
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-    const settingsBtn =
-        document.getElementById("settings-btn");
-
-    if(settingsBtn){
-
-        settingsBtn.onclick = openSettings;
-
-    }
-
-    document
-        .getElementById("settings-cancel")
-        ?.addEventListener("click",closeSettings);
-
-    document
-        .getElementById("settings-save")
-        ?.addEventListener("click",()=>{
-
-            const value =
-                document
-                .getElementById("profile-name-input")
-                .value;
-
-            setProfileName(value);
-
-            closeSettings();
-
-        });
-
-});
